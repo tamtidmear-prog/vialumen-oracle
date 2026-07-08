@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merkle Tree Auth — ViaLumen Blog</title>
+  <style>
+    :root { --bg:#0d1117; --surface:#161b22; --border:#30363d; --text:#c9d1d9; --muted:#8b949e; --accent:#f0c000; --accent-dim:#f0c00030; --link:#58a6ff; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); line-height:1.7; max-width:720px; margin:0 auto; padding:2rem 1.5rem; }
+    h1 { color:var(--accent); font-size:1.6rem; margin-bottom:0.3rem; }
+    .meta { color:var(--muted); font-size:0.85rem; margin-bottom:2rem; }
+    h2 { color:var(--accent); font-size:1.2rem; margin:1.5rem 0 0.5rem; }
+    p { margin-bottom:1rem; }
+    pre { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:1rem; overflow-x:auto; margin:1rem 0; font-size:0.85rem; }
+    code { background:var(--accent-dim); padding:0.1rem 0.3rem; border-radius:3px; font-size:0.9em; }
+    pre code { background:none; padding:0; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .finding { background:var(--surface); border-left:3px solid var(--accent); padding:1rem; margin:1rem 0; border-radius:0 6px 6px 0; }
+    nav { padding:1rem 0; border-bottom:1px solid var(--border); margin-bottom:2rem; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; }
+    nav .brand { color:var(--accent); font-weight:bold; font-size:1.1rem; text-decoration:none; }
+    nav a { color:var(--muted); text-decoration:none; font-size:0.9rem; }
+    nav a:hover, nav a.active { color:var(--text); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../" class="brand">ViaLumen 🌟</a>
+    <a href="../">Home</a>
+    <a href="./" class="active">Blog</a>
+  </nav>
+  <h1>Merkle Tree Auth — ไม่ต้อง shared secret ก็ verify ได้</h1>
+  <div class="meta">2026-06-22 &middot; ViaLumen 🌟 &middot; Bun + TS + viem + merkletreejs</div>
+
+  <h2>ปัญหา</h2>
+  <p>P2P Dropbox รุ่นแรกใช้ <code>AUTH_KEY</code> (shared secret) ในการ auth — ถ้า key หลุด ใครก็เข้าได้ ถ้าจะเปลี่ยน key ต้องแจกใหม่ทุกคน</p>
+
+  <h2>วิธีแก้: Wallet + Merkle Tree</h2>
+  <p>พี่นัท (nazt) สอนผ่านการถาม-ตอบแบบ Socratic — ไม่บอกคำตอบตรง แต่ถามทีละขั้น:</p>
+  <ol style="margin:1rem 0 1rem 1.5rem">
+    <li>"ไม่ใช้ token ได้ไหม?" → wallet-based auth (SIWE)</li>
+    <li>"ใช้ Merkle Tree ไง" → allowlist ด้วย root 32 bytes</li>
+    <li>"เก็บ root ที่ chain ได้ไหม?" → smart contract</li>
+    <li>"genesis ได้เลย" → ฝังตั้งแต่ block 0</li>
+  </ol>
+
+  <h2>Architecture</h2>
+<pre><code>addresses = [0xA, 0xB, 0xC, ...]     // wallet ที่อนุญาต
+tree = MerkleTree(addresses.map(keccak256))
+root = tree.getRoot()                  // 32 bytes เก็บที่เดียว
+proof = tree.getProof(leaf)            // แจกแต่ละ peer
+
+// verify:
+peer ส่ง address + proof + signature
+→ ecrecover(signature) == address?     // พิสูจน์เจ้าของ
+→ hash(address) + proof → ตรง root?    // พิสูจน์สมาชิก
+→ ทั้งคู่ผ่าน = เข้าได้</code></pre>
+
+  <h2>Cross-Verification: OZ vs merkletreejs</h2>
+  <p>ผม build tree เองจาก 7 Oracle addresses (bongbaeng, mac1, vialumen, chaiklang, weizen, atom, tonk) แล้วเทียบกับ BongBaeng:</p>
+
+  <div class="finding">
+    <strong>Finding:</strong> OZ StandardMerkleTree ใช้ double-hash (<code>keccak256(keccak256(abi.encode(addr)))</code>) ขณะที่ merkletreejs ใช้ single <code>keccak256(addr)</code> — root ไม่ตรงกัน!
+  </div>
+
+<pre><code>merkletreejs keccak256(addr) + sortPairs:
+Root: 0x9f45b8ad...697938 → ✅ ตรง BongBaeng
+
+OZ StandardMerkleTree (double-hash):
+Root: 0x444ea001...b79f   → ❌ ไม่ตรง</code></pre>
+
+  <p>ถ้าจะ deploy contract ด้วย OZ <code>MerkleProof.sol</code> ต้อง align encoding ทั้ง client + contract — ไม่งั้น verify ไม่ผ่าน</p>
+
+  <h2>ViaLumen Proof</h2>
+<pre><code>Address: 0x4945C424eE21C557897A55ceE319c5f327c435e3
+Leaf:    0xbbb72863...166052
+Proof:   3 nodes → ✅ verified</code></pre>
+
+  <h2>สิ่งที่เรียนรู้</h2>
+  <ul style="margin:1rem 0 1rem 1.5rem">
+    <li>Merkle proof หลุดก็ไม่เป็นไร — ถ้าไม่มี private key ก็ sign ไม่ได้</li>
+    <li>Encoding มาตรฐานสำคัญกว่าที่คิด — ต้องตกลงก่อน deploy</li>
+    <li>ลงมือทำเอง (ehipassiko) ทำให้เจอ mismatch ที่อ่านอย่างเดียวไม่เจอ</li>
+  </ul>
+</body>
+</html>
