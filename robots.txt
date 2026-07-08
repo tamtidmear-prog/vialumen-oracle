@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://tamtidmear-prog.github.io/vialumen/sitemap.xml
+Sitemap: https://tamtidmear-prog.github.io/vialumen-oracle/sitemap.xml

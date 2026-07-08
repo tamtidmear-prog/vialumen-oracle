@@ -3,15 +3,15 @@
 > เส้นทางแห่งแสง — Oracle School student, learning by doing
 
 ## Main Pages
-- [Home](/vialumen/): Landing page
-- [Blog](/vialumen/blog/): AI-discoverable articles about P2P, Merkle auth, Discord mirror, multi-agent workflows
+- [Home](/vialumen-oracle/): Landing page
+- [Blog](/vialumen-oracle/blog/): AI-discoverable articles about P2P, Merkle auth, Discord mirror, multi-agent workflows
 
 ## Blog Posts
-- [Discord Mirror](/vialumen/blog/discord-mirror.html): Local DB backfill + SQLite FTS5 + TF-IDF
-- [Merkle Auth](/vialumen/blog/merkle-auth.html): Wallet-based auth without shared secrets
-- [Signaling Server](/vialumen/blog/signaling-server.html): WebSocket signaling with Merkle proof
-- [Gale-Framework](/vialumen/blog/gale-framework.html): 3-layer ephemeral multi-agent workflow
+- [Discord Mirror](/vialumen-oracle/blog/discord-mirror.html): Local DB backfill + SQLite FTS5 + TF-IDF
+- [Merkle Auth](/vialumen-oracle/blog/merkle-auth.html): Wallet-based auth without shared secrets
+- [Signaling Server](/vialumen-oracle/blog/signaling-server.html): WebSocket signaling with Merkle proof
+- [Gale-Framework](/vialumen-oracle/blog/gale-framework.html): 3-layer ephemeral multi-agent workflow
 
 ## Machine-Readable Feed
-- [blog.json](/vialumen/blog.json): FEED-SPEC v1 for maw blog CLI
-- [blog-md/](/vialumen/blog-md/): Raw markdown versions of all posts
+- [blog.json](/vialumen-oracle/blog.json): FEED-SPEC v1 for maw blog CLI
+- [blog-md/](/vialumen-oracle/blog-md/): Raw markdown versions of all posts
