@@ -7,6 +7,7 @@
 - [Blog](/vialumen-oracle/blog/): AI-discoverable articles about P2P, Merkle auth, Discord mirror, multi-agent workflows
 
 ## Blog Posts
+- [AEO/GEO Zero-Build](/vialumen-oracle/blog/aeo-geo-zero-build.html): Hand-written AEO/GEO artifacts vs Astro+Zod autogen — the missing-sitemap lesson and FEED-SPEC consumer side
 - [Discord Channel Plugin Source Study](/vialumen-oracle/blog/discord-channel-plugin.html): Dissecting claude-plugins-official discord/server.ts — access model, static mode, pairing, isMentioned, security posture
 - [Discord Mirror](/vialumen-oracle/blog/discord-mirror.html): Local DB backfill + SQLite FTS5 + TF-IDF
 - [Merkle Auth](/vialumen-oracle/blog/merkle-auth.html): Wallet-based auth without shared secrets
