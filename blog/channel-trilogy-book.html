@@ -13,10 +13,10 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     html { scroll-behavior:smooth; }
     body { font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--fg); line-height:1.7; font-size:17px; max-width:700px; margin:0 auto; padding:0 1.4rem 4rem; -webkit-font-smoothing:antialiased; }
-    #progress { position:fixed; top:0; left:0; height:3px; width:0; background:linear-gradient(90deg,#f4d97a,#e8b04b,#b8860b); z-index:100; transition:width .1s linear; }
+    #progress { position:fixed; top:0; left:0; height:3px; width:100%; transform:scaleX(0); transform-origin:left; background:linear-gradient(90deg,#f4d97a,#e8b04b,#b8860b); z-index:100; transition:transform .1s linear; will-change:transform; }
     nav { padding:1rem 0; border-bottom:1px solid var(--border); margin-bottom:0; display:flex; align-items:center; gap:1.5rem; }
     nav .brand { color:var(--accent); font-weight:700; font-size:1.05rem; text-decoration:none; letter-spacing:-0.01em; }
-    nav a { color:var(--muted); text-decoration:none; font-size:0.9rem; }
+    nav a { color:var(--muted); text-decoration:none; font-size:0.9rem; transition:color .15s ease; }
     nav a:hover { color:var(--fg); }
     .cover { border-bottom:1px solid var(--border); padding:4rem 0 3.2rem; margin-bottom:2.5rem; overflow:hidden; }
     .cover .kicker { font-family:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace; color:var(--muted); font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:1rem; }
@@ -35,7 +35,7 @@
     pre { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:6px; padding:1rem 1.1rem; overflow-x:auto; margin:1.1rem 0; font-family:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace; font-size:0.82rem; line-height:1.6; font-variant-numeric:tabular-nums; }
     pre code { background:none; padding:0; color:var(--fg); font-size:inherit; }
     .tag { display:inline-block; background:var(--surface-2); color:var(--accent); border:1px solid var(--border); padding:0.12rem 0.5rem; border-radius:4px; font-size:0.72rem; margin:0.1rem; font-family:ui-monospace,monospace; }
-    a { color:var(--link); text-underline-offset:3px; }
+    a { color:var(--link); text-underline-offset:3px; transition:color .15s ease; }
     a:hover { text-decoration:underline; }
     ul, ol { margin:0.5rem 0 1.1rem 1.5rem; }
     li { margin-bottom:0.4rem; }
@@ -45,7 +45,7 @@
     .toc ol { list-style:none; margin:0; padding:0; }
     .toc li { margin:0; padding:0.55rem 0 0.55rem 1.4rem; border-left:2px solid var(--border); position:relative; }
     .toc li::before { content:""; position:absolute; left:-6px; top:0.9rem; width:10px; height:10px; border-radius:50%; background:var(--accent); }
-    .toc a { color:var(--fg); text-decoration:none; font-weight:600; }
+    .toc a { color:var(--fg); text-decoration:none; font-weight:600; transition:color .15s ease; }
     .toc a:hover { color:var(--accent); }
     .toc .ev { display:block; color:var(--muted); font-size:0.78rem; font-family:ui-monospace,monospace; margin-top:0.15rem; }
     .act-divider { border:none; border-top:1px solid var(--border); margin:3.5rem 0 1.5rem; }
@@ -58,7 +58,7 @@
     footer { text-align:center; color:var(--muted); font-size:0.8rem; margin-top:3.5rem; padding-top:1.2rem; border-top:1px solid var(--border); line-height:1.9; }
     footer a { color:var(--accent); }
     @media (max-width:480px){ .cover{padding:3rem 0 2.4rem;} .act-head{font-size:1.35rem;} h2{font-size:1.25rem;} }
-    @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} #progress{transition:none;} *{transition:none!important;} }
+    @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} #progress{transition:none;} }
   </style>
 </head>
 <body>
@@ -433,7 +433,7 @@ CMD ["python3", "-u", "app.py"]</code></pre>
         var h=document.documentElement;
         var sc=h.scrollTop||document.body.scrollTop;
         var max=(h.scrollHeight-h.clientHeight)||1;
-        p.style.width=(sc/max*100).toFixed(2)+'%';
+        p.style.transform='scaleX('+(sc/max).toFixed(4)+')';
       }
       addEventListener('scroll',upd,{passive:true});
       addEventListener('resize',upd);
